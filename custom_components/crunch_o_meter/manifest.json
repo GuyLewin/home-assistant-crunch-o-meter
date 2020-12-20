@@ -1,0 +1,12 @@
+{
+  "domain": "crunch_o_meter",
+  "name": "Crunch-O-Meter",
+  "documentation": "https://github.com/GuyLewin/hass-crunch-o-meter",
+  "issue_tracker": "https://github.com/GuyLewin/hass-crunch-o-meter/issues",
+  "config_flow": true,
+  "dependencies": [],
+  "codeowners": [
+    "@guylewin"
+  ],
+  "requirements": []
+}

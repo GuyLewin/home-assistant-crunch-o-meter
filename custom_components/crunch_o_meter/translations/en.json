@@ -1,0 +1,18 @@
+{
+    "title": "Crunch-O-Meter",
+    "config": {
+        "error": {
+            "invalid_club_id": "Invalid club provided",
+            "unknown": "Unknown error while contacting Crunch API"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "club": "Crunch Club"
+                },
+                "description": "Setup your Crunch Club",
+                "title": "Crunch-O-Meter"
+            }
+        }
+    }
+}
