@@ -1,0 +1,5 @@
+{
+    "name": "Crunch-O-Meter",
+    "domains": ["sensor"],
+    "iot_class": "Cloud Polling"
+  }
