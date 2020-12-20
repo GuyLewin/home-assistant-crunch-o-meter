@@ -1,6 +1,6 @@
 DOMAIN = "crunch_o_meter"
 VERSION = "1.0.0"
-ISSUE_URL = "https://github.com/GuyLewin/hass-crunch-o-meter"
+ISSUE_URL = "https://github.com/GuyLewin/home-assistant-crunch-o-meter"
 PLATFORM = "sensor"
 
 CRUNCH_JSON_ALL_CLUBS_URL = "https://www.crunch.com/crunch_core/clubs"
