@@ -22,7 +22,9 @@ async def _url_to_json(url, session):
 
 
 async def list_all_clubs(hass):
-    json = await _url_to_json(CRUNCH_JSON_ALL_CLUBS_URL, async_create_clientsession(hass))
+    json = await _url_to_json(
+        CRUNCH_JSON_ALL_CLUBS_URL, async_create_clientsession(hass)
+    )
     return map(lambda club_json: StaticClub(club_json), json)
 
 
@@ -59,11 +61,15 @@ class Club:
 
 
 class DynamicClub(Club):
+    # Manage the time here and not on the sensor since we need a large interval
+    JSON_MAX_AGE = timedelta(minutes=2)
+
     def __init__(self, club_id, hass):
         super().__init__(club_id)
         self._api_url = CRUNCH_JSON_CLUB_URL_TEMPLATE.format(club_id=club_id)
         self._hass = hass
         self._latest_json = None
+        self._latest_json_update_time = None
         self._successful = True
         self._client_session = async_create_clientsession(self._hass)
 
@@ -72,12 +78,22 @@ class DynamicClub(Club):
         return self._latest_json
 
     async def update(self):
+        utc_now = datetime.now(timezone.utc)
+        if (
+            self._latest_json_update_time is not None
+            and utc_now - self._latest_json_update_time < self.__class__.JSON_MAX_AGE
+        ):
+            # Cache is still fresh, no need to contact API
+            return
+
         self._latest_json = await _url_to_json(self._api_url, self._client_session)
         if (
             CRUNCH_JSON_STATUS in self._latest_json
             and self._latest_json[CRUNCH_JSON_STATUS] == CRUNCH_JSON_STATUS_NOT_FOUND
         ):
             raise ClubNotFoundError()
+        # Only update timestamp if request was successful
+        self._latest_json_update_time = utc_now
         self._successful = True
 
     @property

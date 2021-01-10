@@ -28,8 +28,9 @@ class SensorBase(Entity):
     SENSOR_ID = "N/A"
     SENSOR_NAME = "N/A"
 
-    def __init__(self, club):
+    def __init__(self, club, should_update):
         self._club = club
+        self._should_update = should_update
         self._state = None
 
     @property
@@ -49,6 +50,8 @@ class SensorBase(Entity):
         return UNIT_OF_MEASUREMENT
 
     async def async_update(self):
+        if not self._should_update:
+            return
         await self._club.update()
 
 
@@ -57,7 +60,7 @@ class CurrentOccupancy(SensorBase):
     SENSOR_NAME = CURRENT_OCCUPANCY_SENSOR_NAME
 
     def __init__(self, club):
-        super().__init__(club)
+        super().__init__(club, True)
 
     @property
     def state(self):
@@ -69,7 +72,11 @@ class MaxOccupancy(SensorBase):
     SENSOR_NAME = MAX_OCCUPANCY_SENSOR_NAME
 
     def __init__(self, club):
-        super().__init__(club)
+        # Only 1 sensor should keep the club updated
+        # Not updating here means this sensor will always be 1 SCAN_INTERVAL behind
+        # (since the update is async, this update will return fast )
+        # but this value rarely changes, so this is acceptable
+        super().__init__(club, False)
 
     @property
     def state(self):
