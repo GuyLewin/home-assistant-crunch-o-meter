@@ -1,5 +1,5 @@
 DOMAIN = "crunch_o_meter"
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 ISSUE_URL = "https://github.com/GuyLewin/home-assistant-crunch-o-meter"
 PLATFORM = "sensor"
 
