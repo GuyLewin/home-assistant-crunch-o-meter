@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release_zip_file:
+    name: Prepare release asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v1
+
+      - name: Get Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}        
+
+      - name: "Set version number"
+        run: |
+          sed -i '/VERSION = /c\VERSION = "${{ steps.get_version.outputs.VERSION }}"' ${{ github.workspace }}/custom_components/crunch_o_meter/const.py
+          sed -i '/version/c\  \"version\": \"${{ steps.get_version.outputs.VERSION }}\"' ${{ github.workspace }}/custom_components/crunch_o_meter/manifest.json
+      
+      - name: Zip
+        run: |
+          cd ${{ github.workspace }}/custom_components/crunch_o_meter
+          zip crunch_o_meter.zip -r ./
+      
+      - name: Upload Zip to release
+        uses: svenstaro/upload-release-action@v1-release
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/custom_components/crunch_o_meter/crunch_o_meter.zip
+          asset_name: crunch_o_meter.zip
+          tag: ${{ github.ref }}
+          overwrite: true
