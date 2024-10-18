@@ -19,7 +19,10 @@ async def async_setup_entry(hass, config_entry):
         VERSION,
         ISSUE_URL,
     )
-    config_entry.options = config_entry.data
+    # UPDATE 10/18/24 - Use async_update_entry to update options properly in newer HA versions
+    hass.config_entries.async_update_entry(
+        config_entry, options=config_entry.data
+    )
     hass.async_create_task(
         hass.config_entries.async_forward_entry_setup(config_entry, PLATFORM)
     )
